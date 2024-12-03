@@ -47,6 +47,47 @@ InstanceOfB.MethodC();
 A singleton is a pattern that ensures that only one instance of a given class exists at a time. For the command base programming, all subsystems are treated as singletons.
 If there are interests in understanding singleton please see our old lessons here: https://docs.google.com/presentation/d/1PSpcwglfaODJcTwd1MU18RACXyjMkejqbN1AfeUvZGc/edit?usp=sharing
 
+## Override
+
+If a method get the key word @override put above it, then it is allow to be changed when inherited by another class.
+
+For example:
+
+class A {
+    int a;
+    float b;
+
+    public A() {}
+
+    public void MethodA() {}
+    public void MethodB() {}
+}
+
+Then we create a clss B that inherits from class A:
+
+class B : A {
+    double c;
+
+    public B() {}
+
+    public void MethodC() {}
+
+    @Override
+    public void MethodA() {}
+}
+
+Then class B will change what MethodA does.
+
+## lambdas
+
+Lambdas are ways to make temporary methods without defining them. To define a lambda you do the following:
+
+type () -> <add code that calls some function>
+
+example
+() -> true
+- This defines a method that returns true.
+
 # RomiProject
 
 This project is a gutted example project for the Romi. A Romi is a small robot designed by first that allows the use of the WPILIB to control. We will use this project to teach the concepts of the command base design.
@@ -68,6 +109,27 @@ Look under src/java, you will find the following:
 -- periodic functions
 - RobotContainer
 -- This is where most of our work will go for both this project and our main robot code.
+
+## Commands
+
+Commands extend CommandBase which provides the following functions to implement:
+
+- initialize()
+-- This method gets called only once when the command is added to schedular.
+- execute()
+-- This method happens every 20 ms the command is alive
+- end()
+-- This method happend after the isFinished returns true and only once.
+- isFinished()
+-- method used to tell when the command is finished
+
+Each of these methods should be setup to be overrided.
+
+When creating a command, all constructors of command should require a subsystem. To do this the addRequirements method must be added to constructor. The subsystem that the class will use should be added the addRequirements call.
+
+## Command Base Reference
+
+For reference to command structure please refer to this: https://docs.wpilib.org/en/stable/docs/software/commandbased/index.html
 
 ## Create drive subsystem
 
@@ -100,34 +162,30 @@ Look under src/java, you will find the following:
 --- Args: X-AxisSpeed, Y-AxisSpeed
 --- Call arcadeDrive from DifferentialDrive attributes.
 
-Project ToDo:
+## Create Command
 
-Drive Subsystem:
-    Attributes
-        Two motors
-            For each motor
-                Spark - Motor controller
-                    Ids 0, 1
-            Encoder - Encoder controller
-                    Left Ids A: 4, B: 5
-                    Right Ids A: 6, B: 7
-        DifferentialDrive 
-            Requires spark motor controllers
-        RomiGyro (utilize Gyro class in project) - returns given position
-        BuiltInAccelerometer - returns acceleration in a given direction
-    Initialization
-        Make right motor inverted
-        Set Encoder Distance Per Pulse
-            Counts Per Revolutions = 1440.0
-            Wheel Diameter In Inch = 2.75591
-            Distance per rotation = (PI * WheelDiameter)/CountsPerRev
-        Reset encoders
-    Methods needed
-        arcadeDrive
-            Args: X-AxisSpeed, Y-AxisSpeed
-            Call arcadeDrive from DifferentialDrive attributes.
-Commands
-    Utilize IO Class in project
-    Command to drive robot with input
-    Command to drive robot automatically
-    Command of your choice
+- create command folder next to subsystem folder
+- create in comand folder ArcadeDrive.java
+- change public class ArcadeDrive to public class ArcadeDrive extends CommandBase
+- add the following parameters:
+-- private final Drivetrain m_drivetrain;
+-- private final Supplier<Double> m_xaxisSpeedSupplier;
+-- private final Supplier<Double> m_zaxisRotateSupplier;
+- create a constructor and do the following inside it:
+-- add the following args:
+--- Drivetran drivetrain,
+--- Supplier<Double> xaxisSpeedSupplier
+--- Supplier<Double> zaxisRotateSuppplier
+- Create each method needed by a command:
+-- initialize (this returns nothing, has no ars)
+-- execute (this returns nothing, has no args)
+--- execute should call m_drivetrain.arcadeDrive(x_xaxisSpeedSupplier.get(), z_zaxisSpeedSupplier.get());
+-- end (this returns nothing, has one arg: boolean interrupted)
+-- isFinished (returns boolean, has one args, should return false)
+
+## Add Subsystem and Command to RobotContainer
+
+- create the following attributes to RobotContainer class
+-- private final Drivetrain m_drivetrain = new Drivetrain();drivetrain, () -> -m_controller.getRawAxis(1)
+- in configureButtonbindings add the following:
+-- m_drivetrain.setDefaultCommand(new ArcadeDrive(m_controller.getRawAxis(1), () -> m_controller.getRawAxis(2)));
