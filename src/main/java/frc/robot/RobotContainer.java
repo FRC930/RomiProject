@@ -7,6 +7,8 @@ package frc.robot;
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
+import frc.robot.commands.ArcadeDrive;
+import frc.robot.subsystems.Drivetrain;
 import frc.robot.subsystems.OnBoardIO;
 import frc.robot.subsystems.OnBoardIO.ChannelMode;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -30,6 +32,8 @@ public class RobotContainer {
 
   // Create SmartDashboard chooser for autonomous routines
   private final SendableChooser<Command> m_chooser = new SendableChooser<>();
+  
+  private Drivetrain m_drive = new Drivetrain();
 
   // NOTE: The I/O pin functionality of the 5 exposed I/O pins depends on the hardware "overlay"
   // that is specified when launching the wpilib-ws server on the Romi raspberry pi.
@@ -63,6 +67,7 @@ public class RobotContainer {
     //m_chooser.setDefaultOption("Auto Routine Distance", new AutonomousDistance(m_drivetrain));
     //m_chooser.addOption("Auto Routine Time", new AutonomousTime(m_drivetrain));
     //SmartDashboard.putData(m_chooser);
+    m_drive.setDefaultCommand(new ArcadeDrive(m_drive, () -> m_controller.getRawAxis(1), () -> m_controller.getRawAxis(2)));
   }
 
   /**

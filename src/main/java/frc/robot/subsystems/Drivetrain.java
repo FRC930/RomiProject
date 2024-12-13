@@ -11,18 +11,18 @@ public class Drivetrain extends SubsystemBase {
     private final Spark m_rightMotor = new Spark(1);
     private final Encoder m_leftEncoder = new Encoder(4, 5);
     private final Encoder m_rightEncoder = new Encoder(6, 7);
-    private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
+    private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor::set, m_rightMotor::set);
     private final RomiGyro m_gyro = new RomiGyro();
     private final BuiltInAccelerometer m_accelerometer = new BuiltInAccelerometer();
 
 
-    public Drivetrain (int XAxisSpeed, int YAxisSpeed){
+    public Drivetrain (){
         this.m_rightMotor.setInverted(true);
         this.m_leftEncoder.setDistancePerPulse((Math.PI * 2.75591)/1440.0);
         this.m_rightEncoder.setDistancePerPulse((Math.PI * 2.75591)/1440.0);
     }
 
-    public void arcadeDrive (double XAxisSpeed, double YAxisSpeed){
+    public void arcadeDrive(double XAxisSpeed, double YAxisSpeed){
         m_diffDrive.arcadeDrive(XAxisSpeed, YAxisSpeed);
     }
 }
