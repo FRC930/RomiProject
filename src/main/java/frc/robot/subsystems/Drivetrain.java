@@ -1,5 +1,6 @@
 package frc.robot.subsystems;
 import edu.wpi.first.wpilibj.BuiltInAccelerometer;
+import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.motorcontrol.Spark;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import frc.robot.sensors.RomiGyro;
@@ -13,14 +14,14 @@ public class Drivetrain extends SubsystemBase {
     private final DifferentialDrive m_diffDrive = new DifferentialDrive(m_leftMotor, m_rightMotor);
     private final RomiGyro m_gyro = new RomiGyro();
     private final BuiltInAccelerometer m_acceleraometer = new BuiltInAccelerometer();
-
-    public Drivetrain ( int XAxisSpeed, int YAxis){
-        this.m_rightMotor.SetInverted(true);
-        this.m_leftencoder.setDistancePerPulse((Math.PI * 2.75591)/1440.0);
-        this.m_rightencoder.SetDistancePerPulse((Math.PI * 2.75591)/1440.0);
+    
+    public Drivetrain (){
+        this.m_rightMotor.setInverted(true);
+        this.m_leftEncoder.setDistancePerPulse((Math.PI * 2.75591)/1440.0);
+        this.m_rightEncoder.setDistancePerPulse((Math.PI * 2.75591)/1440.0);
 
     }
-    public void arcadeDrive (double XAxisSpeed, double YAxisSpeed){
-        m.diffDrive.aracdeDrive(XAisSpeed, YAxisSpeed);
+    public void drive (double XAxisSpeed, double YAxisSpeed){
+        m_diffDrive.arcadeDrive(XAxisSpeed, YAxisSpeed);
     }    
 }
